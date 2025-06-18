@@ -1,3 +1,5 @@
+
+
 import ballerina/sql;
 
 isolated function getUsersQuery() returns sql:ParameterizedQuery => `
@@ -5,34 +7,36 @@ isolated function getUsersQuery() returns sql:ParameterizedQuery => `
         id,
         name,
         email,
-        phone,
-        created_at,
-        updated_at
+        address
     FROM 
-        users;
+        user;
 `;
+
 isolated function insertUserQuery(UserCreate payload) returns sql:ParameterizedQuery => `
-    INSERT INTO users
+    INSERT INTO user
         (
             name,
             email,
-            phone
+            address
         )
     VALUES
         (
             ${payload.name},
             ${payload.email},
-            ${payload.phone}
+            ${payload.address}
+        
         )
 `;
+
 isolated function deleteUserQuery(int userId) returns sql:ParameterizedQuery => `
-    DELETE FROM users WHERE id = ${userId}
+    DELETE FROM user WHERE id = ${userId}
 `;
-isolated function updateUserQuery(int userId, UserUpdate payload) returns sql:ParameterizedQuery => `
-    UPDATE users
-        SET
+
+isolated function updateUserQuery(int userId, UserUpdate payload) returns sql:ParameterizedQuery =>`
+    UPDATE user
+        SET 
             name = COALESCE(${payload.name}, name),
             email = COALESCE(${payload.email}, email),
-            phone = COALESCE(${payload.phone}, phone)
+            address = COALESCE(${payload.address}, address)
         WHERE id = ${userId}
 `;
