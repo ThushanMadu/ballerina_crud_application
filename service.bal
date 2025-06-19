@@ -81,15 +81,20 @@ resource function get users/search(string name) returns database:User[]|http:Not
     return response;
 }
 
-resource function patch users/[int id](database:UserUpdate user) returns http:NoContent|http:InternalServerError {
-    sql:ExecutionResult|sql:Error response = database:updateUser(id, user);
-    if response is error {
-        return <http:InternalServerError>{
-            body: "Error while updating user"
-        };
+resource function patch users/[int id](database:UserUpdate user) returns http:NoContent|http:NotFound|http:InternalServerError {
+        sql:ExecutionResult|sql:Error response = database:updateUser(id, user);
+        if response is sql:Error {
+            return <http:InternalServerError>{
+                body: "Error while updating user"
+            };
+        }
+        if response.affectedRowCount == 0 {
+            return <http:NotFound>{
+                body: "User not found with ID: " + id.toString()
+            };
+        }
+        return http:NO_CONTENT;
     }
-    return http:NO_CONTENT;
-}
 }
 
 
