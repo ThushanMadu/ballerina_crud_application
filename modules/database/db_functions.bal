@@ -12,7 +12,7 @@ public isolated function getUsers() returns User[]|sql:Error {
     }
     
     // If there is an error, return an error message.
-    return error("Error fetching books");
+    return error("Error fetching users from the database");
 }
 
 public isolated function insertUser(UserCreate payload) returns sql:ExecutionResult|sql:Error {
@@ -26,4 +26,7 @@ public isolated function deleteUser(int userId) returns sql:ExecutionResult|sql:
 public isolated function updateUser(int userId, UserUpdate payload) returns sql:ExecutionResult|sql:Error {
     return dbClient->execute(updateUserQuery(userId, payload));
 }
+
+
+
 
