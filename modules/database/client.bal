@@ -4,9 +4,11 @@
 // Dissemination of any information or reproduction of any material contained
 // herein in any form is strictly forbidden, unless permitted by WSO2 expressly.
 // You may not alter or remove any copyright or other notice from copies of this content.
+
 import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
 
+# Represents the configuration required to connect to the MySQL database.
 type DatabaseConfig record {|
     # User of the database
     string user;
@@ -16,13 +18,15 @@ type DatabaseConfig record {|
     string database;
     # Host of the database
     string host;
-    # Port
+    # Port number of the database
     int port;
 |};
 
-# Database Client Configuration.
+# Database Client Configuration loaded from the configuration file.
 configurable DatabaseConfig dbConfig = ?;
 
+# MySQL database client instance.
+# This client is used for executing queries and interacting with the database.
 final mysql:Client dbClient = check new (
     user = dbConfig.user,
     password = dbConfig.password,
