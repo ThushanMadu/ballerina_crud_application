@@ -26,7 +26,24 @@ public isolated function deleteUser(int userId) returns sql:ExecutionResult|sql:
 public isolated function updateUser(int userId, UserUpdate payload) returns sql:ExecutionResult|sql:Error {
     return dbClient->execute(updateUserQuery(userId, payload));
 }
-
+public isolated function getUserById(int userId) returns User|sql:Error? {
+    // Execute the query and get a stream of user records
+    stream<User, sql:Error?> resultStream = dbClient->query(getUserByIdQuery(userId));
+    
+    // Get the first record from the stream
+    record {| User value; |}|sql:Error? result = resultStream.next();
+    
+    // Close the stream
+    check resultStream.close();
+    
+    // If a record is found, return the User
+    if result is record {| User value; |} {
+        return result.value;
+    }
+    
+    // If no record is found, return null
+    return null;
+}
 
 
 

@@ -57,4 +57,26 @@ service / on new http:Listener(9090) {
 
     return http:NO_CONTENT;
     }
+
+    resource function get users/[int id]() returns database:User|http:NotFound|http:InternalServerError {
+    // Call the getUserById function to fetch the user
+    database:User|sql:Error? response = database:getUserById(id);
+    
+    // Handle error case
+    if response is sql:Error {
+        return <http:InternalServerError>{
+            body: "Error while retrieving user"
+        };
+    }
+    
+    // Handle not found case
+    if response is () {
+        return <http:NotFound>{
+            body: "User with ID " + id.toString() + " not found"
+        };
+    }
+    
+    // Return the found user
+    return response;
+}
 }
