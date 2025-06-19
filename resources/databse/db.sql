@@ -1,8 +1,8 @@
 -- Create the database schema
-CREATE SCHEMA IF NOT EXISTS `user_crud_db`;
+CREATE SCHEMA IF NOT EXISTS `user_db`;
 
 -- Select the schema for use
-USE `user_crud_db`;
+USE `user_db`;
 
 -- Create the users table
 CREATE TABLE IF NOT EXISTS `users` (
@@ -12,3 +12,4 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
+);

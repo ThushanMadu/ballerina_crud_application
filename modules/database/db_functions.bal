@@ -1,5 +1,3 @@
-
-
 import ballerina/sql;
 
 // Define the function to fetch users from the database.
@@ -28,3 +26,4 @@ public isolated function deleteUser(int userId) returns sql:ExecutionResult|sql:
 public isolated function updateUser(int userId, UserUpdate payload) returns sql:ExecutionResult|sql:Error {
     return dbClient->execute(updateUserQuery(userId, payload));
 }
+
