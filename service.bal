@@ -46,48 +46,37 @@ service / on new http:Listener(9090) {
      return http:NO_CONTENT;
     }
 
-    resource function patch users/[int id](database:UserUpdate user) returns http:NoContent|http:InternalServerError {
-    sql:ExecutionResult|sql:Error response = database:updateUser(id, user);
-
-    if response is error {
-        return <http:InternalServerError>{
-            body: "Error while updating user"
-        };
-    }
-
-    return http:NO_CONTENT;
-    }
+    
 
     resource function get users/[int id]() returns database:User|http:NotFound|http:InternalServerError {
-    // Call the getUserById function to fetch the user
-    database:User|sql:Error? response = database:getUserById(id);
-    
-    // Handle error case
-    if response is sql:Error {
-        return <http:InternalServerError>{
-            body: "Error while retrieving user"
-        };
+        database:User|sql:Error? response = database:getUserById(id);
+        if response is sql:Error {
+            return <http:InternalServerError>{
+                body: "Error while retrieving user"
+            };
+        }
+        if response is () {
+            return <http:NotFound>{
+                body: "User not found with ID: " + id.toString()
+            };
+        }
+        return response;
     }
-    
-    // Handle not found case
-    if response is () {
-        return <http:NotFound>{
-            body: "User with ID " + id.toString() + " not found"
-        };
-    }
-    
-    // Return the found user
-    return response;
-}
 
-resource function get users/search(string name) returns database:User[]|http:InternalServerError {
+resource function get users/search(string name) returns database:User[]|http:NotFound|http:InternalServerError {
     database:User[]|sql:Error response = database:getUsersByName(name);
     if response is sql:Error {
         return <http:InternalServerError>{
             body: "Error while searching users by name"
         };
     }
+    if response.length() == 0 {
+        return <http:NotFound>{
+            body: "No users found with name containing: " + name
+        };
+    }
     return response;
 }
 }
+
 
