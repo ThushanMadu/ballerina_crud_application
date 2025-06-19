@@ -45,5 +45,19 @@ public isolated function getUserById(int userId) returns User|sql:Error? {
     return null;
 }
 
+public isolated function getUsersByName(string name) returns User[]|sql:Error {
+    stream<User, sql:Error?> resultStream = dbClient->query(getUsersByNameQuery(name));
+    User[] users = [];
+    error? e = from User user in resultStream
+        do {
+            users.push(user);
+        };
+    if e is error {
+        return error("Error fetching users by name from the database");
+    }
+    return users;
+}
+
+
 
 
