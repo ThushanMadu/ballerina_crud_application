@@ -34,16 +34,19 @@ service / on new http:Listener(9090) {
         return http:CREATED;
     }
 
-    resource function delete users/[int id]() returns http:NoContent|http:InternalServerError {
-     sql:ExecutionResult|sql:Error response = database:deleteUser(id);
-
-     if response is error {
-         return <http:InternalServerError>{
-             body: "Error while deleting user"
-         };
-     }
-
-     return http:NO_CONTENT;
+    resource function delete users/[int id]() returns http:NoContent|http:NotFound|http:InternalServerError {
+        sql:ExecutionResult|sql:Error response = database:deleteUser(id);
+        if response is sql:Error {
+            return <http:InternalServerError>{
+                body: "Error while deleting user"
+            };
+        }
+        if response.affectedRowCount == 0 {
+            return <http:NotFound>{
+                body: "User not found with ID: " + id.toString()
+            };
+        }
+        return http:NO_CONTENT;
     }
 
     
