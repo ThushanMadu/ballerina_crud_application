@@ -48,7 +48,7 @@ ballerina_crud_application/
 
 1. **Clone the repository:**
    ```sh
-   git clone [text](https://github.com/ThushanMadu/ballerina_crud_application.git)
+   git clone https://github.com/ThushanMadu/ballerina_crud_application.git
    cd ballerina_crud_application
    ```
 
