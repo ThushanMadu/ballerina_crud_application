@@ -1,7 +1,8 @@
 import ballerina/sql;
 
-// Fetch all users from the database.
-// Returns an array of User records or an sql:Error on failure.
+// Fetches all users from the database.
+// 
+// + return - An array of User records if successful, or an sql:Error if an error occurs.
 public isolated function getUsers() returns User[]|sql:Error {
     // Execute the query and return a stream of user records.
     stream<User, sql:Error?> resultStream = dbClient->query(getUsersQuery());
