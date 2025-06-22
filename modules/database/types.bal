@@ -1,22 +1,25 @@
+
+
 import ballerina/sql;
 
 # User record type.
 public type User record {|
-    # Unique identifier for the user.
+    # User ID
     @sql:Column {name: "id"}
     readonly int id;
 
-    # Name of the user.
+    # User name
     @sql:Column {name: "name"}
     string name;
 
-    # Email address of the user.
+    # User email
     @sql:Column {name: "email"}
     string email;
 
-    # Address of the user.
+    # User address
     @sql:Column {name: "address"}
     string address;
+    
 |};        
 
 # User create record type.
