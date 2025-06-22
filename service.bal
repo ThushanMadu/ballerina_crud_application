@@ -3,11 +3,14 @@ import ballerina_crud_application.database;
 import ballerina/http;
 import ballerina/sql;
 
-// HTTP service listening on port 9090 for user CRUD operations.
+// HTTP service for managing user CRUD operations.
+// 
+// + service - HTTP listener on port 9090
 service / on new http:Listener(9090) {
 
-    // Resource function to get all users.
-    // Returns an array of User records or an InternalServerError.
+    # Retrieve all users from the database.
+    # 
+    # + return - Array of User records or InternalServerError if retrieval fails
     resource function get users() returns database:User[]|http:InternalServerError {
         // Call the getUsers function to fetch data from the database.
         database:User[]|error response = database:getUsers();
@@ -23,8 +26,10 @@ service / on new http:Listener(9090) {
         return response;
     }
 
-    // Resource function to create a new user.
-    // Accepts a UserCreate payload and returns HTTP 201 Created or InternalServerError.
+    # Create a new user in the database.
+    # 
+    # + user - UserCreate record containing the user details to be created
+    # + return - HTTP 201 Created on success or InternalServerError if creation fails
     resource function post users(database:UserCreate user) returns http:Created|http:InternalServerError {
         sql:ExecutionResult|sql:Error response = database:insertUser(user);
         if response is error {
@@ -35,8 +40,11 @@ service / on new http:Listener(9090) {
         return http:CREATED;
     }
 
-    // Resource function to delete a user by ID.
-    // Returns HTTP 204 NoContent, 404 NotFound, or InternalServerError.
+    # Delete a user from the database by ID.
+    # 
+    # + id - ID of the user to delete
+    # + return - HTTP 204 NoContent on success, 404 NotFound if user doesn't exist,
+    #            or InternalServerError if deletion fails
     resource function delete users/[int id]() returns http:NoContent|http:NotFound|http:InternalServerError {
         sql:ExecutionResult|sql:Error response = database:deleteUser(id);
         if response is sql:Error {
@@ -52,8 +60,11 @@ service / on new http:Listener(9090) {
         return http:NO_CONTENT;
     }
 
-    // Resource function to get a user by ID.
-    // Returns a User record, 404 NotFound, or InternalServerError.
+    # Retrieve a specific user by ID.
+    # 
+    # + id - ID of the user to retrieve
+    # + return - User record if found, 404 NotFound if user doesn't exist,
+    #            or InternalServerError if retrieval fails
     resource function get users/[int id]() returns database:User|http:NotFound|http:InternalServerError {
         database:User|sql:Error? response = database:getUserById(id);
         if response is sql:Error {
@@ -69,8 +80,11 @@ service / on new http:Listener(9090) {
         return response;
     }
 
-    // Resource function to search users by name.
-    // Returns an array of User records, 404 NotFound, or InternalServerError.
+    # Search users by name (partial match).
+    # 
+    # + name - Name or partial name to search for
+    # + return - Array of matching User records, 404 NotFound if no users match,
+    #            or InternalServerError if search fails
     resource function get users/search(string name) returns database:User[]|http:NotFound|http:InternalServerError {
         database:User[]|sql:Error response = database:getUsersByName(name);
         if response is sql:Error {
@@ -86,8 +100,12 @@ service / on new http:Listener(9090) {
         return response;
     }
 
-    // Resource function to update a user by ID (partial update).
-    // Accepts a UserUpdate payload and returns HTTP 204 NoContent, 404 NotFound, or InternalServerError.
+    # Update a user's information (partial update).
+    # 
+    # + id - ID of the user to update
+    # + user - UserUpdate record containing the fields to update
+    # + return - HTTP 204 NoContent on success, 404 NotFound if user doesn't exist,
+    #            or InternalServerError if update fails
     resource function patch users/[int id](database:UserUpdate user) returns http:NoContent|http:NotFound|http:InternalServerError {
         sql:ExecutionResult|sql:Error response = database:updateUser(id, user);
         if response is sql:Error {

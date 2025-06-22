@@ -1,7 +1,8 @@
 import ballerina/sql;
 
-// Fetch all users from the database.
-// Returns an array of User records or an sql:Error on failure.
+# Fetch all users from the database.
+#
+# + return - Array of User records or an sql:Error on failure
 public isolated function getUsers() returns User[]|sql:Error {
     // Execute the query and return a stream of user records.
     stream<User, sql:Error?> resultStream = dbClient->query(getUsersQuery());
@@ -17,22 +18,35 @@ public isolated function getUsers() returns User[]|sql:Error {
     return error("Error fetching users from the database");
 }
 
-// Insert a new user into the database.
+# Insert a new user into the database.
+#
+# + payload - UserCreate record containing the user details to be inserted
+# + return - Execution result or an sql:Error on failure
 public isolated function insertUser(UserCreate payload) returns sql:ExecutionResult|sql:Error {
     return dbClient->execute(insertUserQuery(payload));
 }
 
-// Delete a user from the database by user ID.
+# Delete a user from the database by user ID.
+#
+# + userId - ID of the user to delete
+# + return - Execution result or an sql:Error on failure
 public isolated function deleteUser(int userId) returns sql:ExecutionResult|sql:Error {
     return dbClient->execute(deleteUserQuery(userId));
 }
 
-// Update a user's information in the database by user ID.
+# Update a user's information in the database by user ID.
+#
+# + userId - ID of the user to update
+# + payload - UserUpdate record containing the fields to update
+# + return - Execution result or an sql:Error on failure
 public isolated function updateUser(int userId, UserUpdate payload) returns sql:ExecutionResult|sql:Error {
     return dbClient->execute(updateUserQuery(userId, payload));
 }
 
-// Fetch a single user by their ID.
+# Fetch a single user by their ID.
+#
+# + userId - ID of the user to fetch
+# + return - User record if found, null if not found, or an sql:Error on failure
 public isolated function getUserById(int userId) returns User|sql:Error? {
     // Execute the query and get a stream of user records
     stream<User, sql:Error?> resultStream = dbClient->query(getUserByIdQuery(userId));
@@ -51,7 +65,10 @@ public isolated function getUserById(int userId) returns User|sql:Error? {
     return null;
 }
 
-// Fetch users by their name (search).
+# Fetch users by their name (search).
+#
+# + name - Name or partial name to search for
+# + return - Array of matching User records or an sql:Error on failure
 public isolated function getUsersByName(string name) returns User[]|sql:Error {
     // Execute the query to search users by name.
     stream<User, sql:Error?> resultStream = dbClient->query(getUsersByNameQuery(name));
